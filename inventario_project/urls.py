@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 def home(request):
     return HttpResponse("<h1>Bienvenido</h1><a href='/api/'>Ir a la API</a>- JUAN PABLO BUITRAGO NARANJO")
@@ -29,4 +30,6 @@ urlpatterns = [
     path('api/', include('inventario.api.urls')),
     path('api/token/', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

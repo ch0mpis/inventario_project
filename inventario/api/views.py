@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from inventario.models import Producto
-from inventario.api.serializer import ProductoSerializer
+from inventario.models import Producto, Categoria 
+from inventario.api.serializer import ProductoSerializer, CategoriaSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 class ProductoViewSet(viewsets.ModelViewSet):
@@ -10,3 +10,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     serializer_class = ProductoSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['nombre', 'marca', 'precio']
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer

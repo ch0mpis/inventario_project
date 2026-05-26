@@ -76,6 +76,7 @@ WSGI_APPLICATION = 'inventario_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+import os
 import dj_database_url
 
 DATABASES = {
@@ -121,5 +122,4 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-import os
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

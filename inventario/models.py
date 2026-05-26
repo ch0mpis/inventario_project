@@ -13,7 +13,7 @@ class Producto(models.Model):
     marca = models.CharField(max_length=50)
     cantidad_min = models.IntegerField()
     cantidad_max = models.IntegerField()
-    precio = models.DecimalField(max_digits=5, decimal_places=2)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
     categoria = models.ForeignKey(
         Categoria,
         on_delete=models.SET_NULL,

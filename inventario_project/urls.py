@@ -19,9 +19,10 @@ from django.urls import path, include
 from django.http import HttpResponse
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.shortcuts import render
 
 def home(request):
-    return HttpResponse("<h1>Bienvenido</h1><a href='/api/'>Ir a la API</a>- JUAN PABLO BUITRAGO NARANJO")
+    return render(request, 'home.html')
 
 
 urlpatterns = [

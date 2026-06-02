@@ -4,449 +4,152 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inventario API</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg: #f5f2eb;
-      --ink: #1a1a1a;
-      --muted: #888;
-      --accent: #1a1a1a;
-      --green: #00c46a;
-      --border: #d8d4cc;
-      --surface: #eeeae0;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'DM Mono', monospace;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ── GRID BACKGROUND ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.4;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 40px;
-    }
-
-    /* ── HEADER ── */
-    header {
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 15px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--ink);
-    }
-
-    .logo span { color: var(--green); }
-
-    .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    /* ── HERO ── */
-    .hero {
-      padding: 100px 0 80px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: end;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .hero-left {}
-
-    .tag {
-      display: inline-block;
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--green);
-      border: 1px solid var(--green);
-      padding: 4px 12px;
-      border-radius: 2px;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 64px;
-      line-height: 1;
-      letter-spacing: -2px;
-      color: var(--ink);
-      margin-bottom: 12px;
-    }
-
-    h1 .line2 {
-      color: var(--muted);
-      font-weight: 400;
-    }
-
-    .hero-desc {
-      font-size: 13px;
-      line-height: 1.8;
-      color: var(--muted);
-      margin-top: 24px;
-      max-width: 380px;
-    }
-
-    .hero-right {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding-bottom: 4px;
-    }
-
-    .meta-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 12px;
-    }
-
-    .meta-item .key {
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-size: 10px;
-    }
-
-    .meta-item .val {
-      color: var(--ink);
-      font-weight: 500;
-    }
-
-    .meta-item .val.green { color: var(--green); }
-
-    /* ── ACTIONS ── */
-    .actions {
-      padding: 60px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-label {
-      font-size: 10px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 32px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 28px;
-      text-decoration: none;
-      color: var(--ink);
-      transition: all 0.2s;
-      display: block;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::after {
-      content: '→';
-      position: absolute;
-      top: 28px;
-      right: 28px;
-      font-size: 16px;
-      color: var(--muted);
-      transition: all 0.2s;
-    }
-
-    .card:hover {
-      background: var(--ink);
-      border-color: var(--ink);
-    }
-
-    .card:hover .card-title,
-    .card:hover .card-desc { color: var(--bg); }
-
-    .card:hover::after { color: var(--green); right: 20px; }
-
-    .card-num {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 2px;
-      margin-bottom: 20px;
-    }
-
-    .card:hover .card-num { color: #666; }
-
-    .card-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 18px;
-      margin-bottom: 8px;
-      transition: color 0.2s;
-    }
-
-    .card-desc {
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.7;
-      transition: color 0.2s;
-    }
-
-    /* ── ENDPOINTS ── */
-    .endpoints {
-      padding: 60px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .endpoint-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .endpoint {
-      display: grid;
-      grid-template-columns: 80px 1fr 1fr;
-      align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 12px;
-      gap: 24px;
-    }
-
-    .endpoint:last-child { border-bottom: none; }
-
-    .method {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 1px;
-      padding: 4px 10px;
-      border-radius: 2px;
-      text-align: center;
-    }
-
-    .get { background: #e8f5ee; color: #00854a; border: 1px solid #b3dfc7; }
-    .post { background: #fff3e0; color: #b35c00; border: 1px solid #ffd199; }
-    .put { background: #e8f0ff; color: #2c5cc5; border: 1px solid #b3c8ff; }
-    .delete { background: #fff0f0; color: #cc0000; border: 1px solid #ffb3b3; }
-
-    .ep-url {
-      font-family: 'DM Mono', monospace;
-      color: var(--ink);
-      font-size: 12px;
-    }
-
-    .ep-desc {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 40px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    footer a {
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    footer a:hover { color: var(--ink); }
-
-    .footer-right {
-      display: flex;
-      gap: 24px;
-    }
-  </style>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/home.css' %}"/>
 </head>
 <body>
 
-<div class="wrap">
-
-  <!-- HEADER -->
-  <header>
-    <div class="logo">INV<span>.</span>API</div>
-    <div class="status-pill">
-      <div class="dot"></div>
-      API Activa
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-left">
-      <div class="tag">REST API v1.0</div>
-      <h1>
-        Inventario<br>
-        <span class="line2">Project</span>
-      </h1>
-      <p class="hero-desc">
-        API REST para gestión de inventario de productos y categorías.
-        Autenticación JWT, paginación, filtros y documentación interactiva.
-      </p>
-    </div>
-    <div class="hero-right">
-      <div class="meta-item">
-        <span class="key">Estado</span>
-        <span class="val green">● Online</span>
-      </div>
-      <div class="meta-item">
-        <span class="key">Framework</span>
-        <span class="val">Django REST Framework</span>
-      </div>
-      <div class="meta-item">
-        <span class="key">Autenticación</span>
-        <span class="val">JWT (SimpleJWT)</span>
-      </div>
-      <div class="meta-item">
-        <span class="key">Base de datos</span>
-        <span class="val">PostgreSQL</span>
-      </div>
-      <div class="meta-item">
-        <span class="key">Autor</span>
-        <span class="val">Juan Pablo Buitrago Naranjo</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ACCIONES -->
-  <section class="actions">
-    <p class="section-label">Accesos rápidos</p>
-    <div class="cards">
-      <a href="/api/" class="card">
-        <div class="card-num">01</div>
-        <div class="card-title">API Root</div>
-        <div class="card-desc">Explorador interactivo de todos los endpoints disponibles.</div>
-      </a>
-      <a href="/api/docs/" class="card">
-        <div class="card-num">02</div>
-        <div class="card-title">Documentación</div>
-        <div class="card-desc">Swagger UI con descripción completa de la API y pruebas en vivo.</div>
-      </a>
-      <a href="https://ch0mpis.github.io/inventario-frontend" target="_blank" class="card">
-        <div class="card-num">03</div>
-        <div class="card-title">Frontend</div>
-        <div class="card-desc">Interfaz web para gestionar el inventario de forma visual.</div>
-      </a>
-    </div>
-  </section>
-
-  <!-- ENDPOINTS -->
-  <section class="endpoints">
-    <p class="section-label">Endpoints principales</p>
-    <div class="endpoint-list">
-      <div class="endpoint">
-        <span class="method post">POST</span>
-        <span class="ep-url">/api/token/</span>
-        <span class="ep-desc">Obtener token JWT</span>
-      </div>
-      <div class="endpoint">
-        <span class="method get">GET</span>
-        <span class="ep-url">/api/productos/</span>
-        <span class="ep-desc">Listar todos los productos (paginado)</span>
-      </div>
-      <div class="endpoint">
-        <span class="method post">POST</span>
-        <span class="ep-url">/api/productos/</span>
-        <span class="ep-desc">Crear nuevo producto</span>
-      </div>
-      <div class="endpoint">
-        <span class="method put">PUT</span>
-        <span class="ep-url">/api/productos/{id}/</span>
-        <span class="ep-desc">Actualizar producto existente</span>
-      </div>
-      <div class="endpoint">
-        <span class="method delete">DELETE</span>
-        <span class="ep-url">/api/productos/{id}/</span>
-        <span class="ep-desc">Eliminar producto</span>
-      </div>
-      <div class="endpoint">
-        <span class="method get">GET</span>
-        <span class="ep-url">/api/categorias/</span>
-        <span class="ep-desc">Listar todas las categorías</span>
-      </div>
-      <div class="endpoint">
-        <span class="method get">GET</span>
-        <span class="ep-url">/api/estadisticas/</span>
-        <span class="ep-desc">Resumen general del inventario</span>
-      </div>
-      <div class="endpoint">
-        <span class="method get">GET</span>
-        <span class="ep-url">/api/docs/</span>
-        <span class="ep-desc">Documentación Swagger interactiva</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <span>Juan Pablo Buitrago Naranjo — SENA ADSO</span>
-    <div class="footer-right">
-      <a href="https://github.com/ch0mpis/inventario_project" target="_blank">GitHub</a>
-      <a href="/api/docs/">Swagger</a>
-      <a href="/admin/">Admin</a>
-    </div>
-  </footer>
-
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">INV<span>/</span>API</div>
+  <div class="status">
+    <div class="dot"></div>
+    Online
+  </div>
 </div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navegación</div>
+      <a href="/" class="sidebar-item active">Inicio</a>
+      <a href="/api/" class="sidebar-item">API Root</a>
+      <a href="/api/docs/" class="sidebar-item">Documentación</a>
+      <a href="/admin/" class="sidebar-item">Admin</a>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Endpoints</div>
+      <a href="/api/productos/" class="sidebar-item">Productos</a>
+      <a href="/api/categorias/" class="sidebar-item">Categorías</a>
+      <a href="/api/estadisticas/" class="sidebar-item">Estadísticas</a>
+      <a href="/api/token/" class="sidebar-item">Token JWT</a>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Externo</div>
+      <a href="https://ch0mpis.github.io/inventario-frontend" target="_blank" class="sidebar-item">Frontend</a>
+      <a href="https://github.com/ch0mpis/inventario_project" target="_blank" class="sidebar-item">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- META -->
+    <div class="meta-row">
+      <div class="meta-chip">Framework <span>Django REST</span></div>
+      <div class="meta-chip">Auth <span>JWT</span></div>
+      <div class="meta-chip">DB <span>PostgreSQL</span></div>
+      <div class="meta-chip">Versión <span>1.0</span></div>
+    </div>
+
+    <!-- ENDPOINTS -->
+    <div class="section-title">Endpoints</div>
+    <table class="endpoint-table">
+      <tr>
+        <td><span class="method post">POST</span></td>
+        <td class="ep-url">/api/token/</td>
+        <td class="ep-desc">Obtener token JWT</td>
+      </tr>
+      <tr>
+        <td><span class="method post">POST</span></td>
+        <td class="ep-url">/api/token/refresh/</td>
+        <td class="ep-desc">Refrescar token JWT</td>
+      </tr>
+      <tr>
+        <td><span class="method get">GET</span></td>
+        <td class="ep-url">/api/productos/</td>
+        <td class="ep-desc">Listar productos (paginado)</td>
+      </tr>
+      <tr>
+        <td><span class="method post">POST</span></td>
+        <td class="ep-url">/api/productos/</td>
+        <td class="ep-desc">Crear producto</td>
+      </tr>
+      <tr>
+        <td><span class="method put">PUT</span></td>
+        <td class="ep-url">/api/productos/{id}/</td>
+        <td class="ep-desc">Actualizar producto</td>
+      </tr>
+      <tr>
+        <td><span class="method delete">DEL</span></td>
+        <td class="ep-url">/api/productos/{id}/</td>
+        <td class="ep-desc">Eliminar producto</td>
+      </tr>
+      <tr>
+        <td><span class="method get">GET</span></td>
+        <td class="ep-url">/api/categorias/</td>
+        <td class="ep-desc">Listar categorías</td>
+      </tr>
+      <tr>
+        <td><span class="method post">POST</span></td>
+        <td class="ep-url">/api/categorias/</td>
+        <td class="ep-desc">Crear categoría</td>
+      </tr>
+      <tr>
+        <td><span class="method get">GET</span></td>
+        <td class="ep-url">/api/estadisticas/</td>
+        <td class="ep-desc">Resumen del inventario</td>
+      </tr>
+      <tr>
+        <td><span class="method get">GET</span></td>
+        <td class="ep-url">/api/docs/</td>
+        <td class="ep-desc">Documentación Swagger</td>
+      </tr>
+    </table>
+
+    <!-- LINKS -->
+    <div class="section-title">Accesos rápidos</div>
+    <div class="links-grid">
+      <a href="/api/" class="link-card">
+        <div>
+          <div class="link-title">API Root</div>
+          <div class="link-sub">Explorador DRF</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a href="/api/docs/" class="link-card">
+        <div>
+          <div class="link-title">Swagger</div>
+          <div class="link-sub">Documentación interactiva</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a href="https://ch0mpis.github.io/inventario-frontend" target="_blank" class="link-card">
+        <div>
+          <div class="link-title">Frontend</div>
+          <div class="link-sub">GitHub Pages</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <span>Juan Pablo Buitrago Naranjo — SENA ADSO</span>
+      <span>inventario-project-5o0z.onrender.com</span>
+    </div>
+
+  </main>
+</div>
+
 </body>
 </html>
